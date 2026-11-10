@@ -133,3 +133,52 @@ Expected response:
     <h1>Hello from DevOps App!</h1>
 
 For troubleshooting, see RUNBOOK.md.
+
+## Docker Deployment
+
+This project uses Docker Compose to run two services:
+
+- **web:** NGINX serves the HTML page and acts as a reverse proxy.
+- **api:** Python HTTP server providing a `/health` endpoint.
+
+### Architecture
+
+Client -> NGINX (web:80) -> Python API (api:5000)
+
+NGINX forwards `/api/health` requests to `/health` on the API.
+
+The web service is available at `127.0.0.1:8080`.
+The API port is not published to the host.
+
+### Start
+
+```bash
+sudo docker compose up -d --build
+```
+
+### Verify
+
+```bash
+sudo docker compose ps
+curl http://127.0.0.1:8080/
+curl http://127.0.0.1:8080/api/health
+```
+
+### Logs
+
+```bash
+sudo docker compose logs --tail=20 web
+sudo docker compose logs --tail=20 api
+```
+
+### Stop
+
+```bash
+sudo docker compose down
+```
+
+### Healthcheck
+
+Docker periodically checks the API's `/health` endpoint.
+
+During startup, Docker Compose waits for the API to become healthy before starting the web service.
