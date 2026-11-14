@@ -24,7 +24,8 @@ A service can be active even when it is disabled. For example, it may have been 
 Check the main process of a service:
 
 ```bash
-ps -p 4511 -o pid,ppid,comm,stat
+PID=$(systemctl show -p MainPID --value apache2.service)
+ps -p "$PID" -o pid,ppid,comm,stat
 ```
 
 Find processes listening on TCP port 80:
